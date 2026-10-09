@@ -1,0 +1,1045 @@
+{
+	"info": {
+		"_postman_id": "2325cc5b-a76c-424f-b32a-9245c2218d18",
+		"name": "Lab05 Registration API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44253107"
+	},
+	"item": [
+		{
+			"name": "S1 Happy path: бүх нөхцөл хангагдахад бүртгэл амжилттай (201 OK)",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234567",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"active\",\"coursesTaken\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS313",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS313",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 201\", () => pm.response.to.have.status(201));",
+									"pm.test(\"result = OK\", () => pm.expect(pm.response.json().result).to.eql(\"OK\"));",
+									"pm.test(\"registrationID тоо байна\", () => pm.expect(pm.response.json().registrationID).to.be.a(\"number\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\",\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S2 Байхгүй оюутан бүртгүүлэхэд ERROR_NO_STUDENT",
+			"item": [
+				{
+					"name": "Setup 1: PUT /courses/CS313",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS313",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_NO_STUDENT\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_NO_STUDENT\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B999999999\",\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S3 Идэвхгүй оюутан бүртгүүлэхэд ERROR_INACTIVE_STUDENT",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234568",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"inactive\",\"coursesTaken\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234568",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234568"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS313",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS313",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_INACTIVE_STUDENT\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_INACTIVE_STUDENT\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234568\",\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S4 Байхгүй хичээлд бүртгүүлэхэд ERROR_NO_COURSE",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234567",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"active\",\"coursesTaken\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_NO_COURSE\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_NO_COURSE\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\",\"courseID\":\"XX999\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S5 Урьдач нөхцөл огт үзээгүй үед ERROR_PREREQUISITES",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234567",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"active\",\"coursesTaken\":[]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS313",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS313",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_PREREQUISITES\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_PREREQUISITES\"));",
+									"pm.test(\"missing = [CS201]\", () => pm.expect(pm.response.json().missing).to.eql([\"CS201\"]));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\",\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S6 Урьдач зарим нь дутуу үед ERROR_PREREQUISITES (missing=[CS202])",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234567",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"active\",\"coursesTaken\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS314",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\",\"CS202\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS314",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS314"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_PREREQUISITES\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_PREREQUISITES\"));",
+									"pm.test(\"missing = [CS202]\", () => pm.expect(pm.response.json().missing).to.eql([\"CS202\"]));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\",\"courseID\":\"CS314\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S7 Хязгаар: урьдачгүй хичээл + хоосон coursesTaken үед OK",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234567",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"active\",\"coursesTaken\":[]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234567",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234567"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS101",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS101",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS101"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 201\", () => pm.response.to.have.status(201));",
+									"pm.test(\"result = OK\", () => pm.expect(pm.response.json().result).to.eql(\"OK\"));",
+									"pm.test(\"registrationID тоо байна\", () => pm.expect(pm.response.json().registrationID).to.be.a(\"number\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\",\"courseID\":\"CS101\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S8 Хязгаар: studentID дутуу үед 400 ERROR_BAD_REQUEST",
+			"item": [
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 400\", () => pm.response.to.have.status(400));",
+									"pm.test(\"result = ERROR_BAD_REQUEST\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_BAD_REQUEST\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S9 Хязгаар: courseID дутуу үед 400 ERROR_BAD_REQUEST",
+			"item": [
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 400\", () => pm.response.to.have.status(400));",
+									"pm.test(\"result = ERROR_BAD_REQUEST\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_BAD_REQUEST\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234567\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S10 Хязгаар: буруу JSON үед 400 ERROR_BAD_JSON",
+			"item": [
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 400\", () => pm.response.to.have.status(400));",
+									"pm.test(\"result = ERROR_BAD_JSON\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_BAD_JSON\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\": ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S11 Давхар алдаа: оюутан ч хичээл ч байхгүй үед ERROR_NO_STUDENT",
+			"item": [
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_NO_STUDENT\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_NO_STUDENT\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B999999999\",\"courseID\":\"XX999\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "S12 Давхар алдаа: идэвхгүй оюутан + урьдач дутуу үед ERROR_INACTIVE_STUDENT",
+			"item": [
+				{
+					"name": "Setup 1: PUT /students/B231234568",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"status\":\"inactive\",\"coursesTaken\":[]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/students/B231234568",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"students",
+								"B231234568"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Setup 2: PUT /courses/CS313",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"prerequisites\":[\"CS201\"]}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/courses/CS313",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"courses",
+								"CS313"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /registrations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Статус 200\", () => pm.response.to.have.status(200));",
+									"pm.test(\"result = ERROR_INACTIVE_STUDENT\", () => pm.expect(pm.response.json().result).to.eql(\"ERROR_INACTIVE_STUDENT\"));"
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"studentID\":\"B231234568\",\"courseID\":\"CS313\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"registrations"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
