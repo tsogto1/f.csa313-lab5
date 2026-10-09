@@ -1,0 +1,437 @@
+newman
+
+Lab05 Registration API
+
+❏ S1 Happy path: бүх нөхцөл хангагдахад бүртгэл амжилттай (201 OK)
+↳ Setup 1: PUT /students/B231234567
+  PUT http://localhost:3000/students/B231234567 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS313
+  PUT http://localhost:3000/courses/CS313 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+  4. Статус 201
+  5. result = OK
+  6. registrationID тоо байна
+
+❏ S2 Байхгүй оюутан бүртгүүлэхэд ERROR_NO_STUDENT
+↳ Setup 1: PUT /courses/CS313
+  PUT http://localhost:3000/courses/CS313 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+  9. Статус 200
+ 10. result = ERROR_NO_STUDENT
+
+❏ S3 Идэвхгүй оюутан бүртгүүлэхэд ERROR_INACTIVE_STUDENT
+↳ Setup 1: PUT /students/B231234568
+  PUT http://localhost:3000/students/B231234568 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS313
+  PUT http://localhost:3000/courses/CS313 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 14. Статус 200
+ 15. result = ERROR_INACTIVE_STUDENT
+
+❏ S4 Байхгүй хичээлд бүртгүүлэхэд ERROR_NO_COURSE
+↳ Setup 1: PUT /students/B231234567
+  PUT http://localhost:3000/students/B231234567 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 18. Статус 200
+ 19. result = ERROR_NO_COURSE
+
+❏ S5 Урьдач нөхцөл огт үзээгүй үед ERROR_PREREQUISITES
+↳ Setup 1: PUT /students/B231234567
+  PUT http://localhost:3000/students/B231234567 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS313
+  PUT http://localhost:3000/courses/CS313 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 23. Статус 200
+ 24. result = ERROR_PREREQUISITES
+ 25. missing = [CS201]
+
+❏ S6 Урьдач зарим нь дутуу үед ERROR_PREREQUISITES (missing=[CS202])
+↳ Setup 1: PUT /students/B231234567
+  PUT http://localhost:3000/students/B231234567 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS314
+  PUT http://localhost:3000/courses/CS314 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 29. Статус 200
+ 30. result = ERROR_PREREQUISITES
+ 31. missing = [CS202]
+
+❏ S7 Хязгаар: урьдачгүй хичээл + хоосон coursesTaken үед OK
+↳ Setup 1: PUT /students/B231234567
+  PUT http://localhost:3000/students/B231234567 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS101
+  PUT http://localhost:3000/courses/CS101 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 35. Статус 201
+ 36. result = OK
+ 37. registrationID тоо байна
+
+❏ S8 Хязгаар: studentID дутуу үед 400 ERROR_BAD_REQUEST
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 39. Статус 400
+ 40. result = ERROR_BAD_REQUEST
+
+❏ S9 Хязгаар: courseID дутуу үед 400 ERROR_BAD_REQUEST
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 42. Статус 400
+ 43. result = ERROR_BAD_REQUEST
+
+❏ S10 Хязгаар: буруу JSON үед 400 ERROR_BAD_JSON
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 45. Статус 400
+ 46. result = ERROR_BAD_JSON
+
+❏ S11 Давхар алдаа: оюутан ч хичээл ч байхгүй үед ERROR_NO_STUDENT
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 48. Статус 200
+ 49. result = ERROR_NO_STUDENT
+
+❏ S12 Давхар алдаа: идэвхгүй оюутан + урьдач дутуу үед ERROR_INACTIVE_STUDENT
+↳ Setup 1: PUT /students/B231234568
+  PUT http://localhost:3000/students/B231234568 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ Setup 2: PUT /courses/CS313
+  PUT http://localhost:3000/courses/CS313 [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+
+↳ POST /registrations
+  POST http://localhost:3000/registrations [errored]
+     connect ECONNREFUSED 127.0.0.1:3000
+ 53. Статус 200
+ 54. result = ERROR_INACTIVE_STUDENT
+
+┌─────────────────────────┬──────────┬──────────┐
+│                         │ executed │   failed │
+├─────────────────────────┼──────────┼──────────┤
+│              iterations │        1 │        0 │
+├─────────────────────────┼──────────┼──────────┤
+│                requests │       26 │       26 │
+├─────────────────────────┼──────────┼──────────┤
+│            test-scripts │       12 │        0 │
+├─────────────────────────┼──────────┼──────────┤
+│      prerequest-scripts │        0 │        0 │
+├─────────────────────────┼──────────┼──────────┤
+│              assertions │       28 │       28 │
+├─────────────────────────┴──────────┴──────────┤
+│ total run duration: 1017ms                    │
+├───────────────────────────────────────────────┤
+│ total data received: 0B (approx)              │
+└───────────────────────────────────────────────┘
+
+[31m   # [39m[31m failure        [39m[31m detail                                                                                                     [39m
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 01.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 02.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 03.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 04.  AssertionError  Статус 201                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S1 Happy path: бүх нөхцөл хангагдахад бүртгэл амжилттай (201 OK) / POST /registrations"            
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 05.  JSONError       result = OK                                                                                                
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S1 Happy path: бүх нөхцөл хангагдахад бүртгэл амжилттай (201 OK) / POST /registrations"            
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 06.  JSONError       registrationID тоо байна                                                                                   
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:2 in test-script                                                                              
+                      inside "S1 Happy path: бүх нөхцөл хангагдахад бүртгэл амжилттай (201 OK) / POST /registrations"            
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 07.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 08.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 09.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S2 Байхгүй оюутан бүртгүүлэхэд ERROR_NO_STUDENT / POST /registrations"                             
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 10.  JSONError       result = ERROR_NO_STUDENT                                                                                  
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S2 Байхгүй оюутан бүртгүүлэхэд ERROR_NO_STUDENT / POST /registrations"                             
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 11.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 12.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 13.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 14.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S3 Идэвхгүй оюутан бүртгүүлэхэд ERROR_INACTIVE_STUDENT / POST /registrations"                      
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 15.  JSONError       result = ERROR_INACTIVE_STUDENT                                                                            
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S3 Идэвхгүй оюутан бүртгүүлэхэд ERROR_INACTIVE_STUDENT / POST /registrations"                      
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 16.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 17.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 18.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S4 Байхгүй хичээлд бүртгүүлэхэд ERROR_NO_COURSE / POST /registrations"                             
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 19.  JSONError       result = ERROR_NO_COURSE                                                                                   
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S4 Байхгүй хичээлд бүртгүүлэхэд ERROR_NO_COURSE / POST /registrations"                             
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 20.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 21.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 22.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 23.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S5 Урьдач нөхцөл огт үзээгүй үед ERROR_PREREQUISITES / POST /registrations"                        
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 24.  JSONError       result = ERROR_PREREQUISITES                                                                               
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S5 Урьдач нөхцөл огт үзээгүй үед ERROR_PREREQUISITES / POST /registrations"                        
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 25.  JSONError       missing = [CS201]                                                                                          
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:2 in test-script                                                                              
+                      inside "S5 Урьдач нөхцөл огт үзээгүй үед ERROR_PREREQUISITES / POST /registrations"                        
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 26.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 27.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 28.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 29.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S6 Урьдач зарим нь дутуу үед ERROR_PREREQUISITES (missing=[CS202]) / POST /registrations"          
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 30.  JSONError       result = ERROR_PREREQUISITES                                                                               
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S6 Урьдач зарим нь дутуу үед ERROR_PREREQUISITES (missing=[CS202]) / POST /registrations"          
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 31.  JSONError       missing = [CS202]                                                                                          
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:2 in test-script                                                                              
+                      inside "S6 Урьдач зарим нь дутуу үед ERROR_PREREQUISITES (missing=[CS202]) / POST /registrations"          
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 32.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 33.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 34.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 35.  AssertionError  Статус 201                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S7 Хязгаар: урьдачгүй хичээл + хоосон coursesTaken үед OK / POST /registrations"                   
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 36.  JSONError       result = OK                                                                                                
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S7 Хязгаар: урьдачгүй хичээл + хоосон coursesTaken үед OK / POST /registrations"                   
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 37.  JSONError       registrationID тоо байна                                                                                   
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:2 in test-script                                                                              
+                      inside "S7 Хязгаар: урьдачгүй хичээл + хоосон coursesTaken үед OK / POST /registrations"                   
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 38.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 39.  AssertionError  Статус 400                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S8 Хязгаар: studentID дутуу үед 400 ERROR_BAD_REQUEST / POST /registrations"                       
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 40.  JSONError       result = ERROR_BAD_REQUEST                                                                                 
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S8 Хязгаар: studentID дутуу үед 400 ERROR_BAD_REQUEST / POST /registrations"                       
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 41.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 42.  AssertionError  Статус 400                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S9 Хязгаар: courseID дутуу үед 400 ERROR_BAD_REQUEST / POST /registrations"                        
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 43.  JSONError       result = ERROR_BAD_REQUEST                                                                                 
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S9 Хязгаар: courseID дутуу үед 400 ERROR_BAD_REQUEST / POST /registrations"                        
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 44.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 45.  AssertionError  Статус 400                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S10 Хязгаар: буруу JSON үед 400 ERROR_BAD_JSON / POST /registrations"                              
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 46.  JSONError       result = ERROR_BAD_JSON                                                                                    
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S10 Хязгаар: буруу JSON үед 400 ERROR_BAD_JSON / POST /registrations"                              
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 47.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 48.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S11 Давхар алдаа: оюутан ч хичээл ч байхгүй үед ERROR_NO_STUDENT / POST /registrations"            
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 49.  JSONError       result = ERROR_NO_STUDENT                                                                                  
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S11 Давхар алдаа: оюутан ч хичээл ч байхгүй үед ERROR_NO_STUDENT / POST /registrations"            
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 50.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 51.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 52.  Error                                                                                                                      
+                      connect ECONNREFUSED 127.0.0.1:3000                                                                        
+                      at request                                                                                                 
+                      inside ""                                                                                                  
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 53.  AssertionError  Статус 200                                                                                                 
+                      expected PostmanResponse{ …(5) } to have property 'code'                                                   
+                      at assertion:0 in test-script                                                                              
+                      inside "S12 Давхар алдаа: идэвхгүй оюутан + урьдач дутуу үед ERROR_INACTIVE_STUDENT / POST /registrations" 
+[90m     [39m[90m                [39m[90m                                                                                                            [39m
+ 54.  JSONError       result = ERROR_INACTIVE_STUDENT                                                                            
+                      "undefined" is not valid JSON                                                                              
+                      at assertion:1 in test-script                                                                              
+                      inside "S12 Давхар алдаа: идэвхгүй оюутан + урьдач дутуу үед ERROR_INACTIVE_STUDENT / POST /registrations" 
